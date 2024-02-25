@@ -1,5 +1,7 @@
 package com.stocks.user;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
@@ -19,6 +21,35 @@ public class Student {
 	private String name;
 	private String email;
 	private String phoneNumber;
+	private String country;
+	private String city;
+	private LocalDate dateOfBirth;
+	
+	
+
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
 
 	public String getPhoneNumber() {
 		return phoneNumber;

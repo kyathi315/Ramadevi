@@ -2,7 +2,9 @@ package com.stocks.Impl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.stocks.DTO.UserDTO;
 import com.stocks.Exceptions.UserException;
@@ -18,35 +20,39 @@ public class UserServiceImpl implements UserService{
 	 UserRepository userRepository;
 
 
-	 @Override
+	 private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
 	 public UserDTO registerUser(UserDTO userDTO) {
-	     if (userRepository.existsByUsername(userDTO.getUsername())) {
-	         throw new UserException("User already exists with username: " + userDTO.getUsername());
-	     }
-	     
-	     if (userRepository.existsByEmail(userDTO.getEmail())) {
-	         throw new UserException("User already exists with email: " + userDTO.getEmail());
-	     }
-	     if (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
-	         throw new UserException("Password is required");
-	     }
+	        if (userRepository.existsByUsername(userDTO.getUsername())) {
+	            throw new UserException("User already exists with username: " + userDTO.getUsername());
+	        }
 
-	     User user = UserMapper.toEntity(userDTO);
-	     user = userRepository.save(user);
-	     return UserMapper.toDTO(user);
-	 }
+	        if (userRepository.existsByEmail(userDTO.getEmail())) {
+	            throw new UserException("User already exists with email: " + userDTO.getEmail());
+	        }
 
+	        if (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
+	            throw new UserException("Password is required");
+	        }
 
+	        String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
+	        User user = UserMapper.toEntity(userDTO);
+	        user.setPassword(encodedPassword);
+
+	        user = userRepository.save(user);
+	        return UserMapper.toDTO(user);
+	    }
 	 @Override
 	 public boolean loginUser(String username, String password) {
 	     User user = userRepository.findByUsername(username);
 	     if (user == null) {
 	         throw new UserException("Invalid username.");
 	     }
-	     if (!user.getPassword().equals(password)) {
-	         throw new UserException("Incorrect password.");
-	     }
+	     if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+	            throw new UserException("Incorrect password.");
+	        }
 	     return true;
 	 }
+	
 
 }

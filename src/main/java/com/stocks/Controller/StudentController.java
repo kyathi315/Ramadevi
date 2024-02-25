@@ -19,6 +19,10 @@ import com.stocks.DTO.StudentDTO;
 import com.stocks.Exceptions.StudentException;
 import com.stocks.service.StudentService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/students")
@@ -49,14 +53,20 @@ public class StudentController {
 	            return  new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 	    }
-
+	    @ApiOperation(value = "Save a new student", notes = "Provide student details to save a new student")
+	    @ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Student saved successfully"),
+	        @ApiResponse(code = 400, message = "Bad Request")
+	    })
 	    @PostMapping("/save")
 	    public ResponseEntity<?> saveStudent(@RequestBody StudentDTO studentDTO) {
 	        try {
 	            StudentDTO savedStudent = studentService.save(studentDTO);
-	            return new ResponseEntity<>(savedStudent, HttpStatus.OK);
+	            return ResponseEntity.ok(savedStudent);
 	        } catch (StudentException e) {
-	            return new ResponseEntity<>( e.getMessage(),HttpStatus.BAD_REQUEST);
+	            return ResponseEntity.badRequest().body(e.getMessage());
+	        } catch (Exception e) {
+	            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + e.getMessage());
 	        }
 	    }
 	    @PutMapping("/updatestu/{id}")

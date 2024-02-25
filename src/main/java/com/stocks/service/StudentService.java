@@ -9,4 +9,5 @@ public interface StudentService {
     StudentDTO findById(Long id);
     StudentDTO save(StudentDTO studentDTO);
     void deleteById(Long id);
+	void checkAndSendBirthdayEmails();
 }
