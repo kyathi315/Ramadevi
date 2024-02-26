@@ -58,7 +58,7 @@ public class StudentServiceImpl implements StudentService {
 	        studentRepository.deleteById(id);
 	    }
 
-	    @Scheduled(cron = "0 17 20 * * ?")
+	    @Scheduled(cron = "0 36 12 * * ?")
 	    public void checkAndSendBirthdayEmails() {
 	        List<Student> todaysBirthdays = studentRepository.findByDateOfBirth(LocalDate.now());
 	        for (Student student : todaysBirthdays) {

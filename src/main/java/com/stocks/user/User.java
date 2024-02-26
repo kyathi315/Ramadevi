@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "appuser")
+@Table(name = "code")
 public class User {
 
 	@Id
@@ -20,13 +20,15 @@ public class User {
 	private String password;
 	@Column(unique = true)
 	private String email;
-	private String image;
+	@Column(name = "image", columnDefinition="VARBINARY(MAX)")
+	private byte[] image;
 
-	public String getImage() {
+
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 

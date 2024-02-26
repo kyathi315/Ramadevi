@@ -9,6 +9,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //import com.google.common.base.Predicate;
 
+
+//@EnableSwagger2
 @Configuration
 public class SwaggerConfig {
 	@Bean

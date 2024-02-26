@@ -22,25 +22,21 @@ public class UserServiceImpl implements UserService{
 
 	 private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-	 public UserDTO registerUser(UserDTO userDTO) {
-	        if (userRepository.existsByUsername(userDTO.getUsername())) {
-	            throw new UserException("User already exists with username: " + userDTO.getUsername());
+
+	 @Override
+	    public void saveUser(String email, String username, String password, byte[] image) {
+	        try {
+	            User user = new User();
+	            user.setEmail(email);
+	            user.setUsername(username);
+	            user.setPassword(bCryptPasswordEncoder.encode(password)); 
+	            user.setImage(image);
+
+	            userRepository.save(user);
+	        } catch (Exception e) {
+	            System.out.println("Error while saving user: " + e.getMessage());
+	            throw new RuntimeException("Error while saving user.", e);
 	        }
-
-	        if (userRepository.existsByEmail(userDTO.getEmail())) {
-	            throw new UserException("User already exists with email: " + userDTO.getEmail());
-	        }
-
-	        if (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
-	            throw new UserException("Password is required");
-	        }
-
-	        String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
-	        User user = UserMapper.toEntity(userDTO);
-	        user.setPassword(encodedPassword);
-
-	        user = userRepository.save(user);
-	        return UserMapper.toDTO(user);
 	    }
 	 @Override
 	 public boolean loginUser(String username, String password) {
